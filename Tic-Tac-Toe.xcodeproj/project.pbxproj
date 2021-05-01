@@ -45,6 +45,7 @@
 		5BF71039263DBCDD0076C62D /* Tic-Tac-ToeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tic-Tac-ToeUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5BF7103D263DBCDD0076C62D /* Tic_Tac_ToeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tic_Tac_ToeUITests.swift; sourceTree = "<group>"; };
 		5BF7103F263DBCDD0076C62D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5BF7104B263DBD130076C62D /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +98,7 @@
 			children = (
 				5BF71020263DBCDC0076C62D /* Tic_Tac_ToeApp.swift */,
 				5BF71022263DBCDC0076C62D /* ContentView.swift */,
+				5BF7104B263DBD130076C62D /* README.md */,
 				5BF71024263DBCDD0076C62D /* Assets.xcassets */,
 				5BF71029263DBCDD0076C62D /* Info.plist */,
 				5BF71026263DBCDD0076C62D /* Preview Content */,
