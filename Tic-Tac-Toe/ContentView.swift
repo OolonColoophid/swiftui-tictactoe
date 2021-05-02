@@ -17,10 +17,6 @@ struct ContentView: View {
         repeating: nil,
         count: 9)
 
-    @State private var isHumansTurn = true
-
-
-
     var body: some View {
         GeometryReader { geometry in
             VStack {
@@ -48,10 +44,23 @@ struct ContentView: View {
                                 .foregroundColor(.white)
                         }
                         .onTapGesture {
-                            moves[i] = Move(
-                                player: isHumansTurn ? .human : .computer,
-                                boardIndex: i)
-                            isHumansTurn.toggle()
+                            if !squareIsOccupied(
+                                in: moves,
+                                forIndex: i)
+                            {
+                                moves[i] = Move(
+                                    player: .human,
+                                    boardIndex: i)
+                            }
+
+                            // Check for win conditon (or draw)
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                let computerPosition = determineComputerMovePosition(in: moves)
+                                moves[computerPosition] = Move(
+                                    player: .computer,
+                                    boardIndex: computerPosition)
+
+                            }
                         }
                     }
                 }
@@ -61,6 +70,28 @@ struct ContentView: View {
             .padding()
 
         }
+    }
+
+    func squareIsOccupied(
+        in moves: [Move?],
+        forIndex index: Int)
+    -> Bool
+    {
+        return moves.contains(where: { $0?.boardIndex == index })
+    }
+
+    func determineComputerMovePosition(
+        in moves: [Move?])
+    -> Int
+    {
+        var movePosition = Int.random(in: 0..<9)
+
+        while squareIsOccupied(in: moves, forIndex: movePosition)
+        {
+            movePosition = Int.random(in: 0..<9)
+        }
+
+        return movePosition
     }
 }
 
