@@ -4,6 +4,12 @@ I'm  following the tutorial given by [this guy](https://www.youtube.com/watch?v=
 
 This will ultimately become an MVVM app (Model View ViewModel).
 
-## First Go
+## First Go
 
 Having fun! Got to 16:44.
+
+## This is awesome
+
+Just added in a function to check if a square is occupied, and also something to compute the computer's move.
+
+Got to [here](https://youtu.be/MCLiPW2ns2w?t=1634)
