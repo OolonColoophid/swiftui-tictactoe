@@ -16,6 +16,7 @@ struct ContentView: View {
     @State private var moves: [Move?] = Array(
         repeating: nil,
         count: 9)
+    @State private var isGameboardDisabled = false
 
     var body: some View {
         GeometryReader { geometry in
@@ -52,14 +53,30 @@ struct ContentView: View {
                                     player: .human,
                                     boardIndex: i)
                             }
+                            isGameboardDisabled = true
 
                             // Check for win conditon (or draw)
+
+                            if checkWinCondition(
+                                for: .human,
+                                in: moves)
+                            {
+                                print("The human won!")
+                            }
+
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                 let computerPosition = determineComputerMovePosition(in: moves)
                                 moves[computerPosition] = Move(
                                     player: .computer,
                                     boardIndex: computerPosition)
+                                isGameboardDisabled = false
 
+                                if checkWinCondition(
+                                    for: .computer,
+                                    in: moves)
+                                {
+                                    print("The computer won!")
+                                }
                             }
                         }
                     }
@@ -67,6 +84,7 @@ struct ContentView: View {
 
                 Spacer()
             }
+            .disabled(isGameboardDisabled)
             .padding()
 
         }
@@ -92,6 +110,43 @@ struct ContentView: View {
         }
 
         return movePosition
+    }
+
+    func checkWinCondition(
+        for player: Player,
+        in moves: [Move?]
+    )-> Bool
+    {
+        // If a player 'owns' these positions, they have won
+        let winPatterns: Set<Set<Int>> = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [3, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6]
+        ]
+
+        // Compact map will remove nils from our arry (which might look
+        // like [move, nil, nil, move, move, move] etc. Then we filter
+        // by which player we're looking at
+        let playerMoves = moves.compactMap { $0 }.filter { $0.player == player }
+
+        // For each of the player moves, pull out the board index
+        let playerPositions = Set(playerMoves.map { $0.boardIndex })
+
+        // Now we can see if the player moves (in terms of board indexes)
+        // contains any of the winning positions subsets. In other words
+        // do any player moves include 0, 1, 2? If so, the player
+        // has won.
+        for pattern in winPatterns where pattern.isSubset(of: playerPositions)
+        {
+            return true
+        }
+
+        return false
     }
 }
 
