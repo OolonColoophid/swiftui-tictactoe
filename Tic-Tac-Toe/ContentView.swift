@@ -55,13 +55,20 @@ struct ContentView: View {
                             }
                             isGameboardDisabled = true
 
-                            // Check for win conditon (or draw)
-
+                            // Check for win conditon
                             if checkWinCondition(
                                 for: .human,
                                 in: moves)
                             {
                                 print("The human won!")
+                                return
+                            }
+
+                            // Check for draw condition
+                            if checkForDrawCondition(in: moves)
+                            {
+                                print("Draw!")
+                                return
                             }
 
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -76,6 +83,14 @@ struct ContentView: View {
                                     in: moves)
                                 {
                                     print("The computer won!")
+                                    return
+                                }
+
+                                // Check for draw condition
+                                if checkForDrawCondition(in: moves)
+                                {
+                                    print("Draw!")
+                                    return
                                 }
                             }
                         }
@@ -147,6 +162,16 @@ struct ContentView: View {
         }
 
         return false
+    }
+
+    func checkForDrawCondition(
+        in moves: [Move?]
+    ) -> Bool
+    {
+        // if all moves have been made (i.e. all nine squares are full) but
+        // there is no win condition (this has been checked before this function
+        // is called), then it must be a draw
+        return moves.compactMap { $0 }.count == 9
     }
 }
 
