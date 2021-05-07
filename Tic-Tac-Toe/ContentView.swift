@@ -9,20 +9,26 @@ import SwiftUI
 
 struct ContentView: View {
 
+    // How many columns will be use?
     let columns: [GridItem] = [GridItem(.flexible()),
                                GridItem(.flexible()),
                                GridItem(.flexible())]
 
+    // Any time a state variable changes, the view is redrawn
     @State private var moves: [Move?] = Array(
         repeating: nil,
         count: 9)
     @State private var isGameboardDisabled = false
+    @State private var alertItem: AlertItem?
 
     var body: some View {
+        // The Geometry container gives us access to size and shape info
         GeometryReader { geometry in
             VStack {
                 Spacer()
 
+                // The LazyWorld container sticks to the columns provided and
+                // then grows rows lazily depending on the items we put in
                 LazyVGrid(
                     columns: columns,
                     spacing: 5
@@ -53,23 +59,24 @@ struct ContentView: View {
                                     player: .human,
                                     boardIndex: i)
                             }
-                            isGameboardDisabled = true
 
                             // Check for win conditon
                             if checkWinCondition(
                                 for: .human,
                                 in: moves)
                             {
-                                print("The human won!")
+                                alertItem = AlertContext.humanWin
                                 return
                             }
 
                             // Check for draw condition
                             if checkForDrawCondition(in: moves)
                             {
-                                print("Draw!")
+                                alertItem = AlertContext.draw
                                 return
                             }
+
+                            isGameboardDisabled = true
 
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                 let computerPosition = determineComputerMovePosition(in: moves)
@@ -82,14 +89,14 @@ struct ContentView: View {
                                     for: .computer,
                                     in: moves)
                                 {
-                                    print("The computer won!")
+                                    alertItem = AlertContext.computerWin
                                     return
                                 }
 
                                 // Check for draw condition
                                 if checkForDrawCondition(in: moves)
                                 {
-                                    print("Draw!")
+                                    alertItem = AlertContext.draw
                                     return
                                 }
                             }
@@ -101,6 +108,17 @@ struct ContentView: View {
             }
             .disabled(isGameboardDisabled)
             .padding()
+
+            // $alertItem means this function is bound to self.alertItem.
+            // When it changes, this function is called. (So it will be
+            // game when there is a win, lose or draw.)
+            .alert(item: $alertItem, content: { alertItem in
+                Alert(title: alertItem.title,
+                      message: alertItem.message,
+                      dismissButton: .default(
+                        alertItem.buttonField,
+                        action: resetGame))
+            } )
 
         }
     }
@@ -172,6 +190,13 @@ struct ContentView: View {
         // there is no win condition (this has been checked before this function
         // is called), then it must be a draw
         return moves.compactMap { $0 }.count == 9
+    }
+
+    func resetGame()
+    {
+        moves = Array(
+            repeating: nil,
+            count: 9)
     }
 }
 
