@@ -51,7 +51,7 @@ struct ContentView: View {
                                 .foregroundColor(.white)
                         }
                         .onTapGesture {
-                            if !squareIsOccupied(
+                            if !isSquareOccupied(
                                 in: moves,
                                 forIndex: i)
                             {
@@ -123,7 +123,7 @@ struct ContentView: View {
         }
     }
 
-    func squareIsOccupied(
+    func isSquareOccupied(
         in moves: [Move?],
         forIndex index: Int)
     -> Bool
@@ -131,13 +131,74 @@ struct ContentView: View {
         return moves.contains(where: { $0?.boardIndex == index })
     }
 
+    // If AI can win, then win
+    // If AI can't win, then block
+    // If AI can't block, then take middle square
+    // If AI cn't take middle square, take random available square
     func determineComputerMovePosition(
         in moves: [Move?])
     -> Int
     {
+        // If AI can win, then win
+
+        // If there are 2/3 of a win pattern for the computer, then the computer
+        // is one step from winning.
+        let winPatterns: Set<Set<Int>> = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [3, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6]
+        ]
+        let computerMoves = moves.compactMap { $0 }.filter { $0.player == .computer }
+        let computerPositions = Set(computerMoves.map { $0.boardIndex })
+
+        for pattern in winPatterns {
+            // If we are one move away from winning, our count of moves (e.g. 0, 2)
+            // subtracted from a winning set (e.g. 0, 1, 2) will be 1 item
+            let winPositions = pattern.subtracting(computerPositions)
+
+            if winPositions.count == 1 {
+                let isAvailable = !isSquareOccupied(
+                    in: moves,
+                    forIndex: winPositions.first!)
+                if isAvailable { return winPositions.first! }
+            }
+        }
+
+        // If AI can't win, then block
+        let centerSquare = 4
+        if !isSquareOccupied(in: moves, forIndex: centerSquare) {
+            return centerSquare
+        }
+
+        // If there are 2/3 of a win pattern for the human, then the human
+        // is one step from winning.
+        let humanMoves = moves.compactMap { $0 }.filter { $0.player == .human }
+        let humanPositions = Set(humanMoves.map { $0.boardIndex })
+
+        for pattern in winPatterns {
+            // If we are one move away from winning, our count of moves (e.g. 0, 2)
+            // subtracted from a winning set (e.g. 0, 1, 2) will be 1 item
+            let winPositions = pattern.subtracting(humanPositions)
+
+            if winPositions.count == 1 {
+                let isAvailable = !isSquareOccupied(
+                    in: moves,
+                    forIndex: winPositions.first!)
+                if isAvailable { return winPositions.first! }
+            }
+        }
+
+        // If AI can't block, then take middle square
+
+        // If AI cn't take middle square, take random available square
         var movePosition = Int.random(in: 0..<9)
 
-        while squareIsOccupied(in: moves, forIndex: movePosition)
+        while isSquareOccupied(in: moves, forIndex: movePosition)
         {
             movePosition = Int.random(in: 0..<9)
         }
@@ -157,7 +218,7 @@ struct ContentView: View {
             [6, 7, 8],
             [0, 3, 6],
             [1, 4, 7],
-            [3, 5, 8],
+            [2, 5, 8],
             [0, 4, 8],
             [2, 4, 6]
         ]

@@ -21,3 +21,10 @@ This code has now been entered. Next step: Alerts. https://youtu.be/MCLiPW2ns2w?
 ## On to alerts
 
 OK, we now get alerts on win, lose or draw, and we reset the game. Next, we'll be improving the AI.
+
+Got to here: https://youtu.be/MCLiPW2ns2w?t=3159
+
+## Improving the AI
+OK, the AI now tries to win if it can, or block a winning move from the human, take the middle square, or otherwise pick at random.
+
+Got to here: https://youtu.be/MCLiPW2ns2w?t=3833
