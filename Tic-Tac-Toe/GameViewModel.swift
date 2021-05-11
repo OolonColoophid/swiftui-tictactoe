@@ -1,125 +1,76 @@
 //
-//  ContentView.swift
+//  GameViewModel.swift
 //  Tic-Tac-Toe
 //
-//  Created by Ian Hocking on 01/05/2021.
+//  Created by Ian Hocking on 11/05/2021.
 //
 
 import SwiftUI
 
-struct ContentView: View {
+/// ObservableObject: Any time anything changes here, an update will be published
+final class GameViewModel: ObservableObject {
 
     // How many columns will be use?
     let columns: [GridItem] = [GridItem(.flexible()),
                                GridItem(.flexible()),
                                GridItem(.flexible())]
 
-    // Any time a state variable changes, the view is redrawn
-    @State private var moves: [Move?] = Array(
+    // @Published tells Swift to fire off an announcement that this has changed.
+    @Published var moves: [Move?] = Array(
         repeating: nil,
         count: 9)
-    @State private var isGameboardDisabled = false
-    @State private var alertItem: AlertItem?
+    @Published var isGameboardDisabled = false
+    @Published var alertItem: AlertItem?
 
-    var body: some View {
-        // The Geometry container gives us access to size and shape info
-        GeometryReader { geometry in
-            VStack {
-                Spacer()
+    func processPlayerMove(for position: Int) {
+        if !isSquareOccupied(
+            in: moves,
+            forIndex: position)
+        {
+            moves[position] = Move(
+                player: .human,
+                boardIndex: position)
+        }
 
-                // The LazyWorld container sticks to the columns provided and
-                // then grows rows lazily depending on the items we put in
-                LazyVGrid(
-                    columns: columns,
-                    spacing: 5
-                ) {
-                    ForEach(0..<9) { i in
-                        ZStack {
-                            Circle()
-                                .foregroundColor(.red).opacity(0.5)
-                                .frame(
-                                    width: geometry.size.width/3 - 15,
-                                    height:  geometry.size.width/3 - 15,
-                                    alignment: .center)
+        // Check for win conditon
+        if checkWinCondition(
+            for: .human,
+            in: moves)
+        {
+            alertItem = AlertContext.humanWin
+            return
+        }
 
-                            Image(systemName: moves[i]?.indicator ?? "")
-                                .resizable()
-                                .frame(
-                                    width: 40,
-                                    height: 40,
-                                    alignment: .center)
-                                .foregroundColor(.white)
-                        }
-                        .onTapGesture {
-                            if !isSquareOccupied(
-                                in: moves,
-                                forIndex: i)
-                            {
-                                moves[i] = Move(
-                                    player: .human,
-                                    boardIndex: i)
-                            }
+        // Check for draw condition
+        if checkForDrawCondition(in: moves)
+        {
+            alertItem = AlertContext.draw
+            return
+        }
 
-                            // Check for win conditon
-                            if checkWinCondition(
-                                for: .human,
-                                in: moves)
-                            {
-                                alertItem = AlertContext.humanWin
-                                return
-                            }
+        isGameboardDisabled = true
 
-                            // Check for draw condition
-                            if checkForDrawCondition(in: moves)
-                            {
-                                alertItem = AlertContext.draw
-                                return
-                            }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [self] in
+            let computerPosition = determineComputerMovePosition(in: moves)
+            moves[computerPosition] = Move(
+                player: .computer,
+                boardIndex: computerPosition)
+            isGameboardDisabled = false
 
-                            isGameboardDisabled = true
-
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                let computerPosition = determineComputerMovePosition(in: moves)
-                                moves[computerPosition] = Move(
-                                    player: .computer,
-                                    boardIndex: computerPosition)
-                                isGameboardDisabled = false
-
-                                if checkWinCondition(
-                                    for: .computer,
-                                    in: moves)
-                                {
-                                    alertItem = AlertContext.computerWin
-                                    return
-                                }
-
-                                // Check for draw condition
-                                if checkForDrawCondition(in: moves)
-                                {
-                                    alertItem = AlertContext.draw
-                                    return
-                                }
-                            }
-                        }
-                    }
-                }
-
-                Spacer()
+            if checkWinCondition(
+                for: .computer,
+                in: moves)
+            {
+                alertItem = AlertContext.computerWin
+                return
             }
-            .disabled(isGameboardDisabled)
-            .padding()
 
-            // $alertItem means this function is bound to self.alertItem.
-            // When it changes, this function is called. (So it will be
-            // game when there is a win, lose or draw.)
-            .alert(item: $alertItem, content: { alertItem in
-                Alert(title: alertItem.title,
-                      message: alertItem.message,
-                      dismissButton: .default(
-                        alertItem.buttonField,
-                        action: resetGame))
-            } )
-
+            // Check for draw condition
+            if checkForDrawCondition(in: moves)
+            {
+                alertItem = AlertContext.draw
+                return
+            }
         }
     }
 
@@ -258,24 +209,5 @@ struct ContentView: View {
         moves = Array(
             repeating: nil,
             count: 9)
-    }
-}
-
-enum Player {
-    case human, computer
-}
-
-struct Move {
-    let player: Player
-    let boardIndex: Int
-
-    var indicator: String {
-        return player == .human ? "xmark" : "circle"
-    }
-}
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
     }
 }
