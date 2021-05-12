@@ -35,6 +35,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5B1E3F0B264C17A2009CE5F6 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		5B24649D264A90D800628C6D /* GameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModel.swift; sourceTree = "<group>"; };
 		5B7358CA264534690016D7B9 /* Alerts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alerts.swift; sourceTree = "<group>"; };
 		5BF7101D263DBCDC0076C62D /* Tic-Tac-Toe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Tic-Tac-Toe.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -49,7 +50,7 @@
 		5BF71039263DBCDD0076C62D /* Tic-Tac-ToeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tic-Tac-ToeUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5BF7103D263DBCDD0076C62D /* Tic_Tac_ToeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tic_Tac_ToeUITests.swift; sourceTree = "<group>"; };
 		5BF7103F263DBCDD0076C62D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		5BF7104B263DBD130076C62D /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		5BF7104B263DBD130076C62D /* log.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = log.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,7 +105,8 @@
 				5BF71022263DBCDC0076C62D /* GameView.swift */,
 				5B24649D264A90D800628C6D /* GameViewModel.swift */,
 				5B7358CA264534690016D7B9 /* Alerts.swift */,
-				5BF7104B263DBD130076C62D /* README.md */,
+				5BF7104B263DBD130076C62D /* log.md */,
+				5B1E3F0B264C17A2009CE5F6 /* README.md */,
 				5BF71024263DBCDD0076C62D /* Assets.xcassets */,
 				5BF71029263DBCDD0076C62D /* Info.plist */,
 				5BF71026263DBCDD0076C62D /* Preview Content */,
